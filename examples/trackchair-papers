@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+
+require_relative '../lib/client'
+
+begin
+  token = Token.load
+rescue
+  $stderr.puts 'No authentication token found. Run `trackchair-login`.'
+  exit 1
+end
+
+if ARGV.length != 1
+  $stderr.puts "Usage: #{$0} <host-name>"
+  $stderr.puts "Example: #{$0} yourconf14"
+  exit 1
+end
+host_name = ARGV[0].strip
+
+client = Client.new(host_name: host_name, token: token)
+Model.store = client.store
+
+client.fetch 'tracks', Track
+client.fetch 'papers', Paper, Account
+
+papers = client.store.all(Paper).group_by &:track
+
+client.store.all(Track).sort.each do |track|
+  puts track.title
+  papers[track].each do |paper|
+    puts "    #{paper.number}"
+  end
+end

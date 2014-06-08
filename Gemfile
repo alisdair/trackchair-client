@@ -1,0 +1,5 @@
+source 'https://rubygems.org'
+gem 'highline'
+gem 'rest-client'
+gem 'activesupport'
+gem 'activemodel'

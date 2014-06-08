@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+
+require 'highline/import'
+require_relative '../lib/client'
+
+client = Client.new
+
+puts "Logging in to TrackChair API...\n"
+
+email    = ask("Email: ")    {|q| q.validate = /.@.+\..+/ }
+password = ask("Password: ") {|q| q.echo = '*' }
+
+begin
+  token = client.login(email, password)
+rescue => e
+  puts "Login failed: #{e}"
+  exit 1
+end
+
+path = File.join(Dir.home, '.trackchair-client')
+File.open(path, 'w') do |f|
+  f.puts token
+end
+puts "Access token stored in #{path}."
