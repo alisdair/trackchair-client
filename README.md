@@ -14,7 +14,7 @@ Basics:
     cd trackchair-client
     bundle install
 
-First, log in to the API to create an access token by running `bundle exec bin/trackchair-login`.
+First, log in to the API to create an access token by running `bundle exec ruby bin/trackchair-login`.
 
 This will ask for your email and password, and store an API token in `~/.trackchair-client`. Note: the token will expire after 2 weeks of inactivity.
 
