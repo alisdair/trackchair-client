@@ -6,6 +6,8 @@ REST API client for [TrackChair][trackchair].
 
 ## Usage
 
+Requires Ruby 2.0 and bundler (`gem install bundler`).
+
 Basics:
 
     git clone https://github.com/alisdair/trackchair-client.git
@@ -22,16 +24,18 @@ There are two example utilities provided with the package: `trackchair-papers`, 
 
 Coming soon? Here are the Rails routes in case you feel like experimenting:
 
-    # API
-    namespace :api do
-      resources :tokens, only: [:create]
-      resources :tracks, only: [:index]
-      resources :papers, only: [:index, :show] do
-        get :manuscript, on: :member
-        resources :tags, only: [:index]
-        resources :comments, only: [:index, :create, :destroy]
-      end
-    end
+```ruby
+# API
+namespace :api do
+  resources :tokens, only: [:create]
+  resources :tracks, only: [:index]
+  resources :papers, only: [:index, :show] do
+    get :manuscript, on: :member
+    resources :tags, only: [:index]
+    resources :comments, only: [:index, :create, :destroy]
+  end
+end
+```
 
 ## License
 
