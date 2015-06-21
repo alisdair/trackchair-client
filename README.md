@@ -29,6 +29,7 @@ Coming soon? Here are the Rails routes in case you feel like experimenting:
 namespace :api do
   resources :tokens, only: [:create]
   resources :tracks, only: [:index]
+  resources :accounts, only: [:index, :show, :update]
   resources :papers, only: [:index, :show] do
     get :manuscript, on: :member
     resources :tags, only: [:index]
