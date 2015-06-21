@@ -1,0 +1,39 @@
+#!/usr/bin/env ruby
+
+require_relative '../lib/client'
+
+begin
+  token = Token.load
+rescue
+  $stderr.puts 'No authentication token found. Run `trackchair-login`.'
+  exit 1
+end
+
+if ARGV.length != 2
+  $stderr.puts "Usage: #{$0} <account-email> <new-orcid>"
+  exit 1
+end
+email = ARGV[0].strip
+orcid = ARGV[1].strip
+
+client = Client.new(token: token)
+Model.store = client.store
+
+client.search 'accounts', { email: email }, Account
+
+accounts = client.store.all(Account)
+if accounts.empty?
+  $stderr.puts "No account with email address #{email}"
+  exit 1
+end
+
+if accounts.size > 1
+  $stderr.puts "Warning: found multiple accounts with this email address:"
+  $stderr.puts "  ids: #{accounts.map(&:id).join(', ')}"
+  $stderr.puts "Using the first"
+end
+
+account = accounts[0]
+puts "Before: #{account.inspect}"
+
+puts client.update 'account', account.id, { orcid: orcid }

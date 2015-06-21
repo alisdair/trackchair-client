@@ -1,6 +1,7 @@
 require 'rest-client'
 require 'json'
 require 'active_support/inflector'
+require 'uri'
 
 require_relative 'model'
 require_relative 'store'
@@ -28,7 +29,7 @@ class Client
   end
 
   def fetch(resource, *classes)
-    response = JSON.parse(api[resource].get)
+    response = JSON.parse(api[resource].get({ accept: 'application/json' }))
 
     classes.each do |c|
       single = c.name.underscore
@@ -42,6 +43,17 @@ class Client
         response[plural].each {|x| store << c.new(x) }
       end
     end
+  end
+
+  def update(resource, id, params)
+    plural = resource.pluralize
+    payload = { resource => params }
+    api["#{plural}/#{id}"].put(payload, { accept: 'application/json'})
+  end
+
+  def search(resource, query, *classes)
+    query = URI.encode_www_form(query)
+    fetch("#{resource}?#{query}", *classes)
   end
 
   def login(email, password)
